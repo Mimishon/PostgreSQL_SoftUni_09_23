@@ -168,22 +168,26 @@ VALUES
 -- "task", "email", and "banana" columns for him.
 -- Submit your query for this task in the Judge system.
 
-
+SELECT "name", "task", "email", "banana"
+		 FROM minions_info;
 
 --     15. Truncate the Table
 -- Kevin has shown you what he learned in the PostgreSQL course and deleted all data stored 
 -- in the database. Can you utilize the query he wrote to TRUNCATE all the records in the "minions_info" table? 
 -- Submit your query for this task in the Judge system.
 
-
+TRUNCATE minions_info
 
 --     16. Drop the Table
 -- Gru disagrees with Dr. Nefario's idea for the parties and requests that you delete the "minions_birthdays" table.
 -- Submit your query for this task in the Judge system.
 
+DROP TABLE minions_birthdays
 
 --     17. Drop the Database
 -- As Gru's weapon is ready, you can delete the "minions_db" database because it will no longer be needed.
 -- *** Note, the database can only be executed by the database owner. It cannot be executed while you are connected to the target database. 
 -- You can connect to "postgres" or any other database to issue this command. Also, if anyone else is connected to the target database, 
 -- this command will fail unless you use the FORCE option.
+
+DROP DATABASE minions_db
