@@ -87,11 +87,16 @@ ALTER COLUMN CODE SET DEFAULT '';
 --     • "banana" - should always be a positive number and greater than 0. The constraint name for this column is " banana_check";
 -- Submit your query for this task in the Judge system.
 
+ALTER TABLE minions_info
+ADD CONSTRAINT unique_containt UNIQUE ("id", email),
+ADD CONSTRAINT banana_check CHECK (banana > 0);
 
 --     9. Change Column’s Data Type
 -- Gru has noticed that Dr. Nefario is taking too much time to write about the daily tasks of the Minions. He wants to change the data type of the "task" column and limit its length to 150 characters. 
 -- Submit your query for this task in the Judge system.
 
+ALTER TABLE minions_info 
+ALTER task TYPE VARCHAR (150);
 
 --     10. Drop Constraint
 -- Gru has realized that he needs to give the Minions two days off per week and wants to update the database accordingly. To do this, you need to remove the constraint that prevents the "equipped" column from having a NULL value.
