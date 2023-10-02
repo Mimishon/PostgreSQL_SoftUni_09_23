@@ -206,7 +206,9 @@ Retrieve all projects without an "end_date", and add 5 months to their "start_da
 *** Note, you have the option to utilize the commutative pairs "+ INTERVAL" to increase the "start_date" by 5 months and determine the date after this duration.
 Submit your query for this task in the Judge system.*/
 
-
+UPDATE projects
+SET end_date = start_date + interval '5 months'
+WHERE end_date IS NULL;
 
     /*17. Award Employees with Experience
 Get all employees who were hired between January 1, 1998, and January 5, 2000. Increase their "salary" by 1500. Add the prefix "Senior" to their "job_title". 
