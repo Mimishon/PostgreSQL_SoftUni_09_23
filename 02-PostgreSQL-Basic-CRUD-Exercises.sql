@@ -97,12 +97,24 @@ Select the projects` "name" from the "projects" table where the "start_date" is 
 "end_date" is less than '2023-06-04 00:00:00'. Then, order the resulting rows in ascending order based on the "start_date" column.
 Submit your query for this task in the Judge system.*/
 
-
+SELECT
+name,
+start_date,
+end_date
+FROM projects
+WHERE start_date >='2016-06-01 07:00:00' AND end_date < '2023-06-04 00:00:00'
+ORDER BY start_date;
 
     /*9. Multiple Conditions
 Write an SQL query to select "number" and "street" from the "addresses" table where "id" is BETWEEN 50 and 100 OR "number" is less than 1000.
 Submit your query for this task in the Judge system.*/
 
+
+SELECT
+number,
+street
+FROM addresses
+WHERE id BETWEEN 50 AND 100 OR number < 1000;
 
 
     /*10. Set of Values
@@ -110,7 +122,10 @@ From the "employees_projects" table, select "employee_id" and "project_id" where
 "project_id" is NOT IN the set of values (50, 100).
 Submit your query for this task in the Judge system.*/
 
-
+SELECT
+employee_id, project_id
+FROM employees_projects
+WHERE employee_id IN (200, 250) AND project_id NOT IN (50, 100);
 
     /*11. Compare Character Values
 Retrieve the first 20 records of the "name" and "start_date" columns from the "projects" table where the "name" is 'Mountain', 'Road', 
