@@ -133,20 +133,37 @@ or 'Touring' using the IN operator.
 *** Note that using the PostgreSQL IN condition can improve the statement's readability and efficiency.
 Submit your query for this task in the Judge system.*/
 
-
+SELECT
+name,
+start_date
+FROM projects
+WHERE name IN ('Mountain', 'Road', 'Touring')
+LIMIT 20;
 
     /*12. Salary
 Write a SQL query to find the "Full Name", "job_title" and "salary" of all employees whose salary is 12500, 14000, 23600, or 25000.
  "Full Name" is a combination of "first_name" and "last_name" (separated with a single space). Order by highest salary.
 Submit your query for this task in the Judge system.*/
 
-
+SELECT 
+first_name||' '|| last_name AS "Full Name",  
+job_title,
+salary
+FROM employees
+WHERE salary IN (12500, 14000, 23600, 25000)
+ORDER BY salary DESC;
 
     /*13. Missing Value
 Develop a SQL query to find the first 3 employees with their "id", "first_name" and "last_name" where the "middle_name" is NULL.
 Submit your query for this task in the Judge system.*/
 
-
+SELECT
+id,
+first_name, 
+last_name
+FROM employees
+WHERE middle_name IS NULL
+LIMIT 3;
 
     /*14. INSERT Departments
 Write a SQL query to create a few new records in the "departments" table. You can find the values below:
@@ -159,6 +176,14 @@ Write a SQL query to create a few new records in the "departments" table. You ca
 	('Executive', 109);
 Submit your query for this task in the Judge system.*/
 
+INSERT INTO departments (department, manager_id)
+VALUES 	('Finance', 3),
+	('Information Services', 42),
+	('Document Control', 90),
+	('Quality Assurance', 274),
+	('Facilities and Maintenance', 218),
+	('Shipping and Receiving', 85),
+	('Executive', 109);
 
 
     /*15. New Table 
@@ -168,7 +193,13 @@ and also select the "job_title" column, which should be renamed as "Job Title". 
 as "Department ID", and select the "manager_id" column, which should be renamed as "Manager ID".
 Submit your query for this task in the Judge system.*/
 
-
+CREATE TABLE company_chart
+AS SELECT
+first_name||' '|| last_name AS "Full Name",  
+job_title AS "Job Title",
+department_id AS "Department ID",
+manager_id AS "Manager ID"
+FROM employees;
 
     /*16. Update the Project End Date
 Retrieve all projects without an "end_date", and add 5 months to their "start_date".
