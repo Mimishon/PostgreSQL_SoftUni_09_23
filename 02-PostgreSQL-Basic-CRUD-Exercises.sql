@@ -33,7 +33,11 @@ As you can see, the "cities" table contains duplicate entries. Write an SQL quer
 and eliminating duplicates. Do not forget to select the "area" column and keep the name of the column the same as in the previous task.
 Submit your query for this task in the Judge system.*/
 
-
+SELECT DISTINCT ON (name)
+name,
+area AS "Area (km2)"
+FROM cities
+ORDER BY name DESC;
 
     /*4. Limit Records
 Develop a SQL query that selects from the "employees" table "id", "first_name", "last_name", and 
@@ -41,6 +45,13 @@ Develop a SQL query that selects from the "employees" table "id", "first_name", 
 column as "Job Title". Sort them by the "first_name" field in ascending alphabetical order. Finally, LIMIT the results to 50.
 Submit your query for this task in the Judge system.*/
 
+SELECT 
+id AS "ID", 
+first_name||' '|| last_name AS "Full Name",  
+job_title AS "Job Title"
+FROM employees
+ORDER BY first_name
+LIMIT 50;
 
     /*5. Skip Rows
 Create a SQL query that selects the "employees" records including their "id", "first_name", "middle_name", "last_name", 
@@ -49,29 +60,57 @@ as "Hire Date". Sort the results by the "Hire Date" field in ascending order. La
 *** Note that the OFFSET clause is zero-based, which means it skips the specified number of rows starting from 0.
 Submit your query for this task in the Judge system.*/
 
+SELECT 
+id, 
+first_name||' '|| middle_name||' '|| last_name AS "Full Name",  
+hire_date AS "Hire Date"
+FROM employees
+ORDER BY hire_date
+OFFSET 9;
+
     /*6. Find the Addresses
 Select "id", "number", "street" and "city_id" from the "addresses" table WHERE "id" is greater than or equal to 20. Concatenate the "number" and 
 "street" fields into a single field called "Address".
 Submit your query for this task in the Judge system.*/
+
+SELECT
+id, 
+number||' '|| street AS "Address",
+city_id
+FROM addresses
+WHERE id >= 20;
 
    /* 7. Positive Even Number
 Select "number" and "street" into one column called "Address" as well as "city_id", from the "addresses" table where "city_id" is a 
 positive even number. Order them by the "city_id" field in ascending order.
 Submit your query for this task in the Judge system.*/
 
+SELECT
+number||' '|| street AS "Address",
+city_id
+FROM addresses
+WHERE city_id > 0 AND city_id % 2 = 0
+ORDER BY city_id;
+
     /*8. Projects within a Date Range
 Select the projects` "name" from the "projects" table where the "start_date" is greater than or equal to '2016-06-01 07:00:00' and the 
 "end_date" is less than '2023-06-04 00:00:00'. Then, order the resulting rows in ascending order based on the "start_date" column.
 Submit your query for this task in the Judge system.*/
 
+
+
     /*9. Multiple Conditions
 Write an SQL query to select "number" and "street" from the "addresses" table where "id" is BETWEEN 50 and 100 OR "number" is less than 1000.
 Submit your query for this task in the Judge system.*/
+
+
 
     /*10. Set of Values
 From the "employees_projects" table, select "employee_id" and "project_id" where "employee_id" is IN the set of values (200, 250) and 
 "project_id" is NOT IN the set of values (50, 100).
 Submit your query for this task in the Judge system.*/
+
+
 
     /*11. Compare Character Values
 Retrieve the first 20 records of the "name" and "start_date" columns from the "projects" table where the "name" is 'Mountain', 'Road', 
@@ -79,14 +118,20 @@ or 'Touring' using the IN operator.
 *** Note that using the PostgreSQL IN condition can improve the statement's readability and efficiency.
 Submit your query for this task in the Judge system.*/
 
+
+
     /*12. Salary
 Write a SQL query to find the "Full Name", "job_title" and "salary" of all employees whose salary is 12500, 14000, 23600, or 25000.
  "Full Name" is a combination of "first_name" and "last_name" (separated with a single space). Order by highest salary.
 Submit your query for this task in the Judge system.*/
 
+
+
     /*13. Missing Value
 Develop a SQL query to find the first 3 employees with their "id", "first_name" and "last_name" where the "middle_name" is NULL.
 Submit your query for this task in the Judge system.*/
+
+
 
     /*14. INSERT Departments
 Write a SQL query to create a few new records in the "departments" table. You can find the values below:
@@ -127,15 +172,21 @@ Submit your query for this task in the Judge system.*/
 Delete records from the "addresses" table where the "city_id" is (5, 17, 20, 30).
 Submit your query for this task in the Judge system.*/
 
+
+
     /*19. Create a View
 Create a view named "view_company_chart" that selects "Full Name" and "Job Title" of employees whose "Manager ID" is 184.
 Submit your query for this task in the Judge system.*/
+
+
 
     /*20. Create a View with Multiple Tables
 Create a view called "view_addresses" that selects the "first_name" and "last_name" as "Full Name" and "department_id" from the 
 "employees" table and the "number" and "street" as "Address" from the "addresses" table where the "address_id" matches the "id" 
 in the "addresses" table. Order the results by the "Address" column.
 Submit your query for this task in the Judge system.*/
+
+
 
     /*21. ALTER VIEW
 Rename the "view_addresses" to a more relevant name, "view_employee_addresses_info".
