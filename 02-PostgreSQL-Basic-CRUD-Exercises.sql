@@ -220,7 +220,8 @@ Submit your query for this task in the Judge system.*/
 Delete records from the "addresses" table where the "city_id" is (5, 17, 20, 30).
 Submit your query for this task in the Judge system.*/
 
-
+DELETE FROM addresses
+WHERE city_id IN (5, 17, 20, 30);
 
     /*19. Create a View
 Create a view named "view_company_chart" that selects "Full Name" and "Job Title" of employees whose "Manager ID" is 184.
