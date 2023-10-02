@@ -261,16 +261,29 @@ DROP VIEW view_company_chart;
 Modify the "projects" table by changing the "name" column to its uppercase equivalent.
 Submit your query for this task in the Judge system.*/
 
-
+UPDATE projects
+SET name = UPPER(name);
 
     /*24. * SUBSTRING
 Create a view called "view_initials" that includes the "first_name" and "last_name" columns from the "employees" table. 
 In addition, modify the "first_name" column by extracting the first two characters and renaming the new column as "initial". Order the results by "last_name".
 Submit your query for this task in the Judge system.*/
 
-
+CREATE VIEW view_initials
+AS SELECT
+	SUBSTRING(employees.first_name, 1, 2) AS initial,
+	last_name
+FROM employees 
+ORDER BY last_name;
 
     /*25. * LIKE
 Write a SQL query that selects the "name" and "start_date" columns from the "projects" table where the "name" 
 column starts with the characters 'MOUNT%'. The results should be sorted by project "id".
 Submit your query for this task in the Judge system.*/
+
+SELECT
+name,
+start_date
+FROM projects
+WHERE SUBSTRING(projects.name, 1, 5) = 'MOUNT'
+ORDER BY id;
