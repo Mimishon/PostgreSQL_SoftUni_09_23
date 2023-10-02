@@ -249,13 +249,13 @@ CREATE VIEW view_addresses
 Rename the "view_addresses" to a more relevant name, "view_employee_addresses_info".
 Submit your query for this task in the Judge system.*/
 
-
+ALTER VIEW view_addresses RENAME TO view_employee_addresses_info;
 
     /*22. DROP VIEW
 You can delete the "view_company_chart" since it is no longer necessary.
 Submit your query for this task in the Judge system.*/
 
-
+DROP VIEW view_company_chart;
 
     /*23. * UPPER
 Modify the "projects" table by changing the "name" column to its uppercase equivalent.
