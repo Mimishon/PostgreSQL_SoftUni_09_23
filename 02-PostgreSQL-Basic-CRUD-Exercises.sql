@@ -229,7 +229,12 @@ WHERE city_id IN (5, 17, 20, 30);
 Create a view named "view_company_chart" that selects "Full Name" and "Job Title" of employees whose "Manager ID" is 184.
 Submit your query for this task in the Judge system.*/
 
-
+CREATE VIEW view_company_chart
+AS SELECT
+"Full Name",  
+"Job Title"
+FROM company_chart
+WHERE "Manager ID" = 184;
 
     /*20. Create a View with Multiple Tables
 Create a view called "view_addresses" that selects the "first_name" and "last_name" as "Full Name" and "department_id" from the 
