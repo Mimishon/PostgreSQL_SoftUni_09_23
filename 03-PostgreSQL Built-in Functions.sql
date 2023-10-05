@@ -81,7 +81,10 @@ FROM mountains;
 You may notice that the "capital" names in the "countries" table include letters that are not found in the English alphabet. To address this, you can employ the TRANSLATE() 
 function to convert the non-English characters 'áãåçéíñóú' to their corresponding English letters. Name the resulting column "translated_name". */
 
-
+SELECT 
+capital,
+TRANSLATE(capital, 'áãåçéíñóú', 'aaaceinou')
+FROM countries;
 
 /* 8. LEADING
 If you open the records in the "continents" table, you will find that there are additional spaces added to the front of some of the "continent_name" values. Use the TRIM() 
@@ -89,12 +92,18 @@ function with the appropriate flag to remove them.
 *** Please be aware that the accurate method to confirm the correctness of your query is by double-clicking on the field to select the value. The additional blue
  background color before or after the continent's name will signify any empty spaces, as illustrated in the screenshots below. */
 
-
+SELECT
+continent_name,
+TRIM(LEADING FROM continent_name) AS trim
+FROM continents;
 
 /* 9. TRAILING
 The TRIM() function also has another flag, which can help you remove trailing spaces from the "continent_name" values. */
 
-
+SELECT
+continent_name,
+TRIM(TRAILING FROM continent_name) AS trim
+FROM continents;
 
 /* 10. LTRIM & RTRIM
 The TRIM() function has a shortened version that can remove both spaces and characters. Write an SQL query to remove the "m" character as follows:
@@ -102,24 +111,42 @@ The TRIM() function has a shortened version that can remove both spaces and char
     • remove the 'm' character from the right side of the "peak_name" column within the "peaks" table, and assign the name "Right Trim" to the resulting new column
 *** Note that the PostgreSQL TRIM() function and its equivalent functions are case-sensitive. */
 
-
+SELECT
+LTRIM(peak_name, 'M') AS "Left Trim",
+RTRIM(peak_name, 'm') AS "Right Trim"
+FROM peaks;
 
 /* 11. Character Length and Bits
 Combine the "mountain_range" column from the "mountains" table and the "peak_name" column from the "peaks" table into a single field called "Mountain Information".
  Find the number of characters in the newly created text field and name the new column "Characters Length". Additionally, express the length in bits and name the column "Bits of a String". */
 
-
+SELECT
+CONCAT(m.mountain_range, ' ', p.peak_name) AS "Mountain Information",
+LENGTH(CONCAT(m.mountain_range, ' ', p.peak_name)) AS "Characters Length",
+BIT_LENGTH(CONCAT(m.mountain_range, ' ', p.peak_name)) AS "Bits of a String"
+FROM mountains as m, peaks AS p
+WHERE m.id = p.mountain_id;
 
 /* 12. Length of a Number
 Measure the length of the "population" numbers in the "countries" table. In this case, use the CAST() function to convert the number into a string and then use the LENGTH() function. */
 
 
+SELECT 
+	c.population,
+LENGTH(
+CAST(c.population AS VARCHAR(25))
+		) AS length
+FROM countries AS c;
 
 /* 13. Positive and Negative LEFT
 Write a SQL query to select the FIRST 4 characters from the "peak_name" column and name the new column "Positive Left". Also, select all characters except the
  LAST 4 from the "peak_name" column and name the new column "Negative Left".  */
 
-
+SELECT
+peak_name,
+SUBSTRING(peak_name, 1, 4) AS "Positive Left",
+LEFT(peak_name, -4) AS "Negative Left"
+FROM peaks;
 
 /* 14. Positive and Negative RIGHT
 Write a SQL query to select the LAST 4 characters from the "peak_name" column and name the new column "Positive Right". Also, select all characters except 
