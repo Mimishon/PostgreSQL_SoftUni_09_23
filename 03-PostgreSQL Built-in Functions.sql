@@ -152,18 +152,28 @@ FROM peaks;
 Write a SQL query to select the LAST 4 characters from the "peak_name" column and name the new column "Positive Right". Also, select all characters except 
 the FIRST 4 from the "peak_name" column and name the new column "Negative Right". */
 
+SELECT
+peak_name,
+RIGHT(peak_name, 4) AS "Positive Right",
+RIGHT(peak_name, -4) AS "Negative Right"
+FROM peaks;
 
 
 /* 15. Update iso_code
 As some of the values in the "iso_code" column of the "countries" table are null, update them by taking the first three characters from the "country_name" 
 column and converting them to uppercase. */
 
-
+UPDATE countries
+SET iso_code = UPPER(SUBSTRING(country_name, 1, 3))
+WHERE iso_code IS NULL
+RETURNING *;
 
 /* 16. REVERSE country_code
 Create a SQL query to update the values in the "country_code" column of the "countries" table. The update should convert the values to lowercase and reverse the string. */
 
-
+UPDATE countries
+SET country_code = LOWER(REVERSE(country_code))
+RETURNING *;
 
 /* 17. Elevation --->> Peak Name
 Write an SQL query to select the "elevation" and "peak_name" columns from the "peaks" table where the "elevation" is greater than or equal to 4884. 
@@ -172,7 +182,10 @@ To complete the upcoming exercises, it is necessary to create a new database nam
 the 03-Exercises-Built-in-Functions-booking_db.sql file from the course instance and import it into the query tab of your database. After importing, 
 execute the queries in the file. Use the schema and tables available in the booking_db database for the tasks that follow */
 
-
+SELECT
+CONCAT(elevation,' --->> ', peak_name) AS "Elevation --->> Peak Name"
+FROM peaks
+WHERE elevation >= 4884;
 
 /* 18. Arithmetical Operators
 Let's apply our understanding of mathematical operators in SQL. To begin, create a fresh table named "bookings_calculation". 
@@ -185,18 +198,37 @@ For the final step, proceed to calculate the earnings earned by the owner for ea
     • populate the "multiplication" column by multiplying the "booked_for" values by 50
     • fill the "modulo" column with values representing the remainder when "booked_for" is divided by 50 */
 
+CREATE TABLE bookings_calculation
+AS SELECT booked_for
+FROM bookings
+WHERE bookings.apartment_id = 93;
 
+ALTER TABLE bookings_calculation
+ADD COLUMN multiplication NUMERIC,
+ADD COLUMN modulo NUMERIC;
+
+UPDATE bookings_calculation
+SET multiplication = booked_for * 50,
+modulo = booked_for % 50;
 
 /* 19. ROUND vs TRUNC
 Create a SQL query that retrieves the "latitude" column from the "apartments" table. Apply the ROUND() function to it with a precision 
 of 2 decimal places, and then apply the TRUNC() function with the same precision. Finally, compare and measure the differences in the output produced by the two functions. */
 
 
+SELECT
+latitude,
+ROUND(latitude, 2) AS round,
+TRUNC(latitude, 2) AS TRUNC
+FROM apartments;
 
 /* 20. Absolute Value
 Write an SQL query to select the "longitude" column from the "apartments" table and apply the ABS() function to it to find its absolute value.*/
 
-
+SELECT
+longitude,
+ABS(longitude)
+FROM apartments;
 
 /* 21. Billing Day****
 To generate payment documents for reservations made for apartments, follow these steps: 
@@ -206,7 +238,12 @@ To generate payment documents for reservations made for apartments, follow these
     naming the resulting column "Billing Day".
 The example result shown below is generated using the CURRENT_TIMESTAMP and it is purely for illustrative purposes.*/
  
+ALTER TABLE bookings
+ADD COLUMN billing_day TIMESTAMPTZ DEFAULT(CURRENT_TIMESTAMP);
 
+SELECT
+TO_CHAR(billing_day, 'DD "Day" MM "Month" YYYY "Year" HH24:MI:SS' ) AS "Billing Day"
+FROM bookings;
 
 /* 22. EXTRACT Booked At
 Create a SQL query to retrieve the YEAR, MONTH, DAY, HOUR, MINUTE, and SECOND values from the "booked_at" column. Use the CEILING() function to round up 
@@ -216,7 +253,14 @@ please be aware that the extraction considers your account's time zone informati
 To ensure consistent results for this task, utilize the "AT TIME ZONE" function to convert the timestamp to the UTC time zone before extracting the hour.
  This approach will help ensure uniformity in the results.*/
 
-
+SELECT
+EXTRACT(YEAR FROM booked_at) AS "YEAR",
+EXTRACT(MONTH FROM booked_at) AS "MONTH",
+EXTRACT(DAY FROM booked_at) AS "DAY",
+EXTRACT(HOUR FROM booked_at) AS "HOUR",
+EXTRACT(MINUTE FROM booked_at) AS "MINUTE",
+CEILING(EXTRACT(SECOND FROM booked_at)) AS "SECOND"
+FROM bookings;
 
 /* 23. Early Birds****
 Compose a SQL query to determine the "user_id" of customers who prefer booking 10 months in advance. Achieve this by computing the time 
@@ -226,14 +270,22 @@ and retrieve the corresponding "user_id".
 *** As a suggestion, it is worth noting that the WHERE clause allows you to use the INTERVAL '10 months' to indicate a time period of 
 10 months when used in conjunction with the AGE() function for computing the time difference between two dates.*/
 
-
+SELECT
+user_id, 
+AGE(starts_at, booked_at) AS "Early Birds"
+FROM bookings
+WHERE AGE(starts_at, booked_at)>= INTERVAL '10 months';
 
 /* 24. Match or Not
 Retrieve the "companion_full_name" and "email" columns from the "users" table where the following conditions are met:
     • the "companion_full_name" column should contain the substring '%aNd%' in a case-insensitive manner
     • the "email" column should NOT contain the substring '%@gmail' in a case-sensitive manner*/
 
-
+SELECT
+companion_full_name,
+email
+FROM users
+WHERE companion_full_name ILIKE '%aNd%' AND email NOT LIKE '%@gmail';
 
 /* 25. * COUNT by Initial
 To generate a report displaying the user count grouped by their initials, you can utilize an SQL query. This query involves selecting 
