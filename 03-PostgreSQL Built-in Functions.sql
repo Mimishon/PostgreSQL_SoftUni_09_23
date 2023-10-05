@@ -27,26 +27,43 @@ Create a view named "view_continents_countries_currencies_details". To do so, fo
     Name the resulting column "Currencies"
     • sort the result by the "Country Information" and "Currencies" fields in ascending alphabetical order */
 
-4
+CREATE VIEW view_continents_countries_currencies_details
+AS SELECT
+CONCAT(TRIM(c.continent_name, ' '), ': ', c.continent_code) AS "Continent Details",
+CONCAT(ctr.country_name, ' - ', ctr.capital, ' - ', ctr.area_in_sq_km, ' - ',  'km2') AS "Country Information",
+CONCAT(crc.description, ' ', '(', crc.currency_code, ')') AS "Currencies"
+FROM continents as c, countries AS ctr, currencies AS crc
+WHERE ctr.continent_code = c.continent_code AND ctr.currency_code = crc.currency_code
+ORDER BY "Country Information", "Currencies";
+
 
 /* 3. Capital Code
 Add a new column to the "countries" table named "capital_code", by generating the code by using the SUBSTRING() function to extract the first 2 letters from the "capital" field.
 Choose whichever SQL syntax you prefer to use for the query. */
 
+ALTER TABLE countries
+ADD COLUMN capital_code VARCHAR(5);
 
+UPDATE countries
+SET capital_code = SUBSTRING(capital, 1, 2)
+RETURNING*;
 
 /* 4. (Descr)iption
 Develop an SQL query that removes a portion of the "description" column from the "currencies" table. The query should extract the string starting from the 5th 
 character and return the rest of the string. */
 
-
+SELECT 
+RIGHT(description, -4) AS substring
+FROM currencies;
 
 /* 5. Substring River Length
 Compose an SQL query to fetch the "river_length" from the "River Information" column within the "view_river_info" view. Ensure that only the numerical value is
  selected from the string, with a maximum of four digits, ranging from 0 to 9.
 *** Note that you can use the following regex expression '([0-9]{1,4})' to find the number in the sentence. */
 
-
+SELECT 
+SUBSTRING("River Information", '([0-9]{1,4})') AS river_length
+FROM view_river_info;
 
 /* 6. Replace A
 To write a SQL query that replaces letters in the "mountain_range" column of the "mountains" table, please follow these steps:
@@ -55,7 +72,10 @@ To write a SQL query that replaces letters in the "mountain_range" column of the
 *** Note, the PostgreSQL REPLACE() function is case-sensitive. This means that if you use the function to replace a specific string or character, it will only 
 replace those occurrences that match the case of the original string. */
 
-
+SELECT 
+	REPLACE(mountain_range, 'a', '@') AS replace_a,
+	REPLACE(mountain_range, 'A', '$') AS replace_A
+FROM mountains;
 
 /* 7. Translate
 You may notice that the "capital" names in the "countries" table include letters that are not found in the English alphabet. To address this, you can employ the TRANSLATE() 
