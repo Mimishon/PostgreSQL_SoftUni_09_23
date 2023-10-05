@@ -12,7 +12,11 @@ Create a view named "view_river_info" that concatenates the "river_name", "outfl
 'The river', ' ', river_name, ' ', 'flows into the', ' ', outflow, ' ', 'and is', ' ', "length", ' ', 'kilometers long.'
 The resulting column should be named "River Information", and the rows should be ordered by the "river_name" field in ascending alphabetical order. */
 
-
+CREATE VIEW view_river_info
+AS SELECT
+CONCAT('The river', ' ', river_name, ' ', 'flows into the', ' ', outflow, ' ', 'and is', ' ', "length", ' ', 'kilometers long.') AS "River Information"
+FROM rivers
+ORDER BY river_name;
 
 /* 2. Concatenate Geography Data
 Create a view named "view_continents_countries_currencies_details". To do so, follow these steps:
@@ -23,7 +27,7 @@ Create a view named "view_continents_countries_currencies_details". To do so, fo
     Name the resulting column "Currencies"
     • sort the result by the "Country Information" and "Currencies" fields in ascending alphabetical order */
 
-
+4
 
 /* 3. Capital Code
 Add a new column to the "countries" table named "capital_code", by generating the code by using the SUBSTRING() function to extract the first 2 letters from the "capital" field.
