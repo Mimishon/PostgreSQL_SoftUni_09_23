@@ -294,14 +294,25 @@ Afterward, you can use the GROUP BY clause to group the users based on their ini
 the number of users in each group, and name the resulting column "user_count". Finally, you can arrange the resulting data in descending order 
 according to the "user_count" column. In cases where multiple groups have the same count, you can further sort them alphabetically based on their "initials".*/
 
-
+SELECT
+SUBSTRING(first_name, 1, 2) AS initials,
+COUNT(*) AS user_count
+FROM users
+GROUP BY initials
+ORDER BY user_count DESC, initials ASC;
 
 /* 26. * SUM
 To calculate the total value of bookings for the apartment, you can use an SQL query that retrieves the "booked_for" column from the 
 "bookings" table and applies the SUM() function to it. Then, you can add a filter to select only the rows where the "apartment_id" is equal to 90.*/
 
-
+SELECT
+SUM(booked_for) AS total_value
+FROM bookings
+WHERE apartment_id = 90;
 
 /* 27. * Average Value
 Create an SQL query that utilizes the AVG() function to calculate the average value of the "multiplication" column in the "bookings_calculation" table. */
 
+SELECT
+AVG(multiplication) AS average_value
+FROM bookings_calculation;
