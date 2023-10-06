@@ -34,8 +34,7 @@ CONCAT(ctr.country_name, ' - ', ctr.capital, ' - ', ctr.area_in_sq_km, ' - ',  '
 CONCAT(crc.description, ' ', '(', crc.currency_code, ')') AS "Currencies"
 FROM continents as c, countries AS ctr, currencies AS crc
 WHERE ctr.continent_code = c.continent_code AND ctr.currency_code = crc.currency_code
-ORDER BY "Country Information", "Currencies";
-
+ORDER BY "Country Information", "Currencies";  
 
 /* 3. Capital Code
 Add a new column to the "countries" table named "capital_code", by generating the code by using the SUBSTRING() function to extract the first 2 letters from the "capital" field.
@@ -65,6 +64,11 @@ SELECT
 SUBSTRING("River Information", '([0-9]{1,4})') AS river_length
 FROM view_river_info;
 
+--option 2
+SELECT 
+(REGEXP_MATCHES("River Information", '([0-9]{1,4})')) AS river_length
+FROM view_river_info;
+  
 /* 6. Replace A
 To write a SQL query that replaces letters in the "mountain_range" column of the "mountains" table, please follow these steps:
     • replace all occurrences of "a" with "@". Name the resulting column "replace_a"
@@ -211,10 +215,17 @@ UPDATE bookings_calculation
 SET multiplication = booked_for * 50,
 modulo = booked_for % 50;
 
+--Option 2
+CREATE TABLE bookings_calculation 
+AS SELECT booked_for,
+CAST(booked_for * 50 AS NUMERIC) AS multiplication,
+CAST(booked_for % 50 AS NUMERIC) AS modulo
+FROM bookings
+WHERE apartment_id = 93;
+
 /* 19. ROUND vs TRUNC
 Create a SQL query that retrieves the "latitude" column from the "apartments" table. Apply the ROUND() function to it with a precision 
 of 2 decimal places, and then apply the TRUNC() function with the same precision. Finally, compare and measure the differences in the output produced by the two functions. */
-
 
 SELECT
 latitude,
@@ -257,7 +268,7 @@ SELECT
 EXTRACT(YEAR FROM booked_at) AS "YEAR",
 EXTRACT(MONTH FROM booked_at) AS "MONTH",
 EXTRACT(DAY FROM booked_at) AS "DAY",
-EXTRACT(HOUR FROM booked_at) AS "HOUR",
+EXTRACT(HOUR FROM booked_at at) AS "HOUR",
 EXTRACT(MINUTE FROM booked_at) AS "MINUTE",
 CEILING(EXTRACT(SECOND FROM booked_at)) AS "SECOND"
 FROM bookings;
