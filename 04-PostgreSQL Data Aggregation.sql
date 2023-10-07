@@ -86,7 +86,13 @@ ORDER BY deposit_group DESC, is_deposit_expired;
 /* 9. Notes with Dumbledore
 Generate a SQL query to retrieve the "last_name" of each wizard and the number of "notes" they wrote that contains the word "Dumbledore" in the "wizard_deposits" table.*/
 
-
+SELECT
+last_name,
+COUNT(notes) AS notes_with_dumbledore
+FROM wizard_deposits
+WHERE notes LIKE '%Dumbledore%'
+GROUP BY last_name
+HAVING COUNT(notes) > 0;
 
 /* 10. Wizard View
 Create a view in SQL named "view_wizard_deposits_with_expiration_date_before_1983_08_17" that fetches data from the "wizard_deposits" table.
