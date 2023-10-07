@@ -13,47 +13,75 @@ gringotts_db and open its query tool. Download the 04-Exercises-Data-Aggregation
 1. COUNT of Records 
 After gaining access to this extremely valuable database, determine the exact number of records contained within it.*/
 
-
+SELECT
+COUNT(*)
+FROM wizard_deposits;
 
 /* 2. Total Deposit Amount
 Compose a SQL query that calculates the total sum of the deposit amount held at Gringotts Bank. */
 
-
+SELECT
+SUM(deposit_amount)
+FROM wizard_deposits;
 
 /* 3. AVG Magic Wand Size
 In your role as the database manager, compute the average size of "magic_wand_size" that belongs to wizards and round the result to the third decimal place. */
 
-
+SELECT
+ROUND(AVG(magic_wand_size), 3)
+FROM wizard_deposits;
 
 /* 4. MIN Deposit Charge
 To become acquainted with the database, determine the smallest amount of "deposit_charge".*/
 
-
+SELECT
+MIN(deposit_charge)
+FROM wizard_deposits;
 
 /* 5. MAX Age
 Determine the maximum "age" among the wizards in the database.*/
 
-
+SELECT
+MAX(age) AS maximum_age
+FROM wizard_deposits;
 
 /* 6. GROUP BY Deposit Interest
 Write a SQL query to order the "deposit_group" based on the total amount of "deposit_interest" in each group, and then sort the results in 
 descending order by the total interest in each group.*/
 
-
+SELECT
+deposit_group,
+SUM(deposit_interest) AS deposit_interest
+FROM wizard_deposits
+GROUP BY deposit_group
+ORDER BY deposit_interest DESC;
 
 /* 7. LIMIT the Magic Wand Creator
 Retrieve the "magic_wand_creator" with the smallest "magic_wand_size" from the "wizard_deposits" table. The query should group the results by
  "magic_wand_creator" and display the "minimum_wand_size" for each creator. The results should be sorted in ascending order by the minimum 
  wand size and limited to the top five smallest wand sizes. */
 
-
+SELECT
+magic_wand_creator,
+MIN(magic_wand_size) AS minimum_wand_size
+FROM wizard_deposits
+GROUP BY magic_wand_creator
+ORDER BY minimum_wand_size
+LIMIT 5;
 
 /* 8. Bank Profitability
 Mr. Bodrog is interested in the profitability of the bank and wants to know the average interest rates of all "deposit_groups" rounded down 
 to the nearest integer. The query should categorize the deposits based on whether they have expired or not and retrieve data only for deposits 
 that have a "deposit_start_date" after '1985-01-01'. The results should be sorted in descending order by "deposit_group" and ascending order by the "is_deposit_expired" flag.*/
 
-
+SELECT
+deposit_group,
+is_deposit_expired,
+FLOOR(AVG(deposit_interest)) AS deposit_interest
+FROM wizard_deposits
+WHERE deposit_start_date > '1985-01-01'
+GROUP BY deposit_group, is_deposit_expired
+ORDER BY deposit_group DESC, is_deposit_expired;
 
 /* 9. Notes with Dumbledore
 Generate a SQL query to retrieve the "last_name" of each wizard and the number of "notes" they wrote that contains the word "Dumbledore" in the "wizard_deposits" table.*/
