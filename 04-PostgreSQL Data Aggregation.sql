@@ -284,11 +284,9 @@ CREATE TABLE employees_projects (
 "employee_id" INT,
 "project_id" INT,
 CONSTRAINT fk_employee_id
-FOREIGN KEY(employee_id) 
-REFERENCES employees(id), 
+    FOREIGN KEY(employee_id) REFERENCES employees(id), 
 CONSTRAINT fk_project_id
-FOREIGN KEY(project_id) 
-REFERENCES projects(id)); 
+    FOREIGN KEY(project_id) REFERENCES projects(id)); 
 
 /* 20. * JOIN Tables
 Write a SQL query to join all columns from the "departments" table and the "employees" table where the "id" column in the "departments" table matches 
