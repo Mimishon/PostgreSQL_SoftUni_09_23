@@ -91,8 +91,7 @@ last_name,
 COUNT(notes) AS notes_with_dumbledore
 FROM wizard_deposits
 WHERE notes LIKE '%Dumbledore%'
-GROUP BY last_name
-HAVING COUNT(notes) > 0;
+GROUP BY last_name;
 
 /* 10. Wizard View
 Create a view in SQL named "view_wizard_deposits_with_expiration_date_before_1983_08_17" that fetches data from the "wizard_deposits" table.
@@ -101,20 +100,49 @@ Create a view in SQL named "view_wizard_deposits_with_expiration_date_before_198
  and "amount". Additionally, the view should only include deposits that have an expiration date before or on '1983-08-17', and should be 
  ordered by the "expiration_date" in ascending order.*/
 
-
+CREATE VIEW view_wizard_deposits_with_expiration_date_before_1983_08_17
+AS SELECT
+CONCAT(first_name, ' ', last_name) AS "Wizard Name",
+deposit_start_date AS "Start Date",
+deposit_expiration_date AS "Expiration Date",
+deposit_amount AS "Amount"
+FROM wizard_deposits
+WHERE deposit_expiration_date <= '1983-08-17'
+GROUP BY "Wizard Name", deposit_start_date, deposit_expiration_date, deposit_amount
+ORDER BY deposit_expiration_date ASC;
 
 /* 11. Filter Max Deposit
 Create a SQL query that retrieves the name of the "magic_wand_creator" and their maximum "deposit_amount" from the "wizard_deposits" table. 
 The results should be grouped by the "magic_wand_creator" and filtered to only include those with a maximum "deposit_amount" that falls outside 
 the range of 20000 to 40000. Order the results by "max_deposit_amount" in descending order, and limit the results to 3 records.*/
 
-
+SELECT
+magic_wand_creator,
+MAX(deposit_amount) AS max_deposit_amount
+FROM wizard_deposits
+GROUP BY magic_wand_creator
+HAVING MAX(deposit_amount) < 20000 OR MAX(deposit_amount) > 40000
+ORDER BY max_deposit_amount DESC
+LIMIT 3;
 
 /* 12. Age Group
 Create a SQL query that groups the wizards from the "wizard_deposits" table into age groups of '[0-10]', '[11-20]', '[21-30]', '[31-40]', '[41-50]', 
 '[51-60]', and '[61+]'. The query should count the number of wizards in each "age_group" and display the results in ascending order based on the "age_group".*/
 
-
+SELECT
+	CASE
+		WHEN age BETWEEN 0 AND 10 THEN '[0-10]'
+		WHEN age BETWEEN 11 AND 20 THEN '[11-20]'
+		WHEN age BETWEEN 21 AND 30 THEN '[21-30]'
+		WHEN age BETWEEN 31 AND 40 THEN '[31-40]'
+		WHEN age BETWEEN 41 AND 50 THEN '[41-50]'
+		WHEN age BETWEEN 51 AND 60 THEN '[51-60]'
+		WHEN age >= 61  THEN '[61+]'
+	 END AS "age_group",
+	 COUNT(*)
+FROM wizard_deposits
+GROUP BY age_group
+ORDER BY age_group;
 
 /* Congratulations on your effective management of the Gringotts database! Your expertise has earned you an invitation to become an analyst at SoftUni. 
 To prepare for this role, you'll be working with a familiar database, which has been modified for these tasks. 
