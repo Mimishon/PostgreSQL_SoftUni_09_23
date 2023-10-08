@@ -162,7 +162,15 @@ The "department_id" is stored in the "employees" table, and the following IDs ar
 6 - Research and Development
 7 - Production */
 
-
+SELECT
+COUNT(CASE WHEN department_id = 1 THEN 1 END) AS "Engineering",
+COUNT(CASE WHEN department_id = 2 THEN 2 END) AS "Tool Design",
+COUNT(CASE WHEN department_id = 3 THEN 3 END) AS "Sales",
+COUNT(CASE WHEN department_id = 4 THEN 4 END) AS "Marketing",
+COUNT(CASE WHEN department_id = 5 THEN 5 END) AS "Purchasing",
+COUNT(CASE WHEN department_id = 6 THEN 6 END) AS "Research and Development",
+COUNT(CASE WHEN department_id = 7 THEN 7 END) AS "Production"
+FROM employees;
 
 /* 14. Update Employees' Data
 You have been tasked with updating the salaries and job titles of employees based on their hire dates. Write a SQL query that updates the "salary" and "job_title" 
@@ -171,7 +179,19 @@ columns of the "employees" table according to the following rules:
     • if the employee's "hire_date" is before '2020-03-04, their salary should be increased by 1500 and their job title should be prefixed with "Mid-"
     • otherwise, the employee's salary and job title should remain unchanged.*/
 
-
+UPDATE employees
+SET
+	salary = CASE 
+				WHEN hire_date < '2015-01-16' THEN salary + 2500
+				WHEN hire_date < '2020-03-04' THEN salary + 1500
+				ELSE salary
+			END, 
+	job_title =  CASE 
+				WHEN hire_date < '2015-01-16' THEN 'Senior '|| job_title
+				WHEN hire_date < '2020-03-04' THEN 'Mid-'|| job_title 
+				ELSE job_title
+			END 
+RETURNING job_title, salary;
 
 /* 15. Categorizes Salary
 Write a SQL query that groups employees by their job titles and calculates the average salary for each group. The query should also add a 
@@ -182,7 +202,16 @@ column called "category" that categorizes each "job_title" based on the followin
 Arrange the outcomes based on the "category" column in ascending sequence. If there are several employees within the group, arrange them by their 
 "job_title" in alphabetical order. */
 
-
+SELECT
+job_title,
+	CASE 
+		WHEN AVG(salary) > 45800 THEN 'Good'
+		WHEN AVG(salary) BETWEEN 27500 AND 45800 THEN 'Medium'
+		WHEN AVG(salary) < 27500 THEN 'Need Improvement'
+	END AS "category"
+FROM employees
+GROUP BY job_title
+ORDER BY "category" ASC, job_title ASC;
 
 /* 16. WHERE Project Status
 Create a SQL query that selects the "project_name" with the word '%Mountain%' in their name from the "projects" table. The project status should
@@ -191,7 +220,15 @@ Create a SQL query that selects the "project_name" with the word '%Mountain%' in
     • if a project has a "start_date" but NO "end_date", its status is "In Progress".
     • otherwise, its status is "Done".*/
 
-
+SELECT
+project_name,
+	CASE 
+		WHEN start_date IS NULL AND end_date IS NULL THEN 'Ready for development'
+		WHEN start_date IS NOT NULL AND end_date IS NULL THEN 'In Progress'
+	ELSE 'Done'
+	END AS "project_status"
+FROM projects
+WHERE project_name LIKE '%Mountain%';
 
 /* 17. HAVING Salary Level
 Write a SQL query to retrieve the number of employees and salary level of each department from the "employees" table. The "salary_level" column 
@@ -201,7 +238,17 @@ should be determined based on the following rules:
     • only departments with an average "salary" above 30,000 should be included in the result.
 The resulting dataset should encompass the subsequent columns: "department_id", "num_employees" and "salary_level". Arrange the output based on the "department_id".*/
  
-
+SELECT
+department_id,
+COUNT(*) AS num_employees,
+	CASE 
+		WHEN AVG(salary) > 50000 THEN 'Above average'
+		WHEN AVG(salary) <= 50000 THEN 'Below average'
+	END AS "salary_level"
+FROM employees
+GROUP BY department_id
+HAVING AVG(salary) > 30000
+ORDER BY department_id;
 
 /* 18. * Nested CASE Conditions
 To create a view ("view_performance_rating"), select the "first_name", "last_name", "job_title", "salary", and "department_id" from the "employees" table. 
@@ -210,14 +257,38 @@ Then, use the following conditions to generate the "performance_rating" column:
     • if an employee's "salary" is greater than or equal to 25,000 and their "job_title" does not start with "Senior", their "performance_rating" should be "High-performing Employee"
     • if neither of the above criteria is met, the employee's "performance_rating" should be "Average-performing".*/
 
-
+CREATE VIEW view_performance_rating
+AS SELECT
+	first_name,
+	last_name,
+	job_title,
+	salary,
+	department_id,
+	CASE 
+		WHEN salary > 25000 THEN 
+			CASE 
+				WHEN job_title LIKE 'Senior%' THEN 'High-performing Senior'
+				WHEN job_title NOT LIKE 'Senior%' THEN 'High-performing Employee'
+			END
+	ELSE 'Average-performing'
+	END AS "performance_rating" 
+FROM employees;
 
  /* 19. * Foreign Key
 Create a table named "employees_projects" with columns for "id", "employee_id", and "project_id". The "employee_id" column should have a foreign key 
 constraint that references the "id" column in the "employees" table, and the "project_id" column should have a foreign key constraint that references 
 the "id" column in the "projects" table.*/
 
-
+CREATE TABLE employees_projects (
+"id" SERIAL PRIMARY KEY,
+"employee_id" INT,
+"project_id" INT,
+CONSTRAINT fk_employee_id
+FOREIGN KEY(employee_id) 
+REFERENCES employees(id), 
+CONSTRAINT fk_project_id
+FOREIGN KEY(project_id) 
+REFERENCES projects(id)); 
 
 /* 20. * JOIN Tables
 Write a SQL query to join all columns from the "departments" table and the "employees" table where the "id" column in the "departments" table matches 
