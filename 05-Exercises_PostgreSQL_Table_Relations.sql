@@ -129,7 +129,31 @@ The "customers" table should contain two columns - "name" and "date". In the "ph
 The data type for each column can be chosen according to your preference, but it is essential to ensure that each column has a unique identifier. 
 Moreover, correctly setting up the foreign keys is crucial. */
 
+CREATE TABLE customers(
+	id SERIAL PRIMARY KEY,
+	"name" VARCHAR(50),
+    "date" DATE);
 
+CREATE TABLE photos(
+	id SERIAL PRIMARY KEY,
+	"url" VARCHAR(50),
+	"place" VARCHAR(50),
+    "customer_id" INT,
+	CONSTRAINT fk_photos_customers
+		FOREIGN KEY (customer_id)
+			REFERENCES customers("id"));
+			
+INSERT INTO customers("name", "date") 
+VALUES('Bella', '2022-03-25'), ('Philip', '2022-07-05');
+
+INSERT INTO photos("url", "place", customer_id) 
+VALUES
+('bella_1111.com','National Theatre', 1), 
+('bella_1112.com','Largo', 1),
+('bella_1113.com','The View Restaurant', 1),
+('philip_1121.com','Old Town', 2),
+('philip_1122.com','Rowing Canal', 2),
+('philip_1123.com','Roman Theater', 2);
 
 /* 7. Photo Shooting E/R Diagram****
 Create Entity/Relationship Diagram for the "customers" and "photos" tables that were created in the previous task. */
@@ -145,7 +169,49 @@ The "study_halls" table should contain columns for "study_hall_name" and "exam_i
  You are free to choose the appropriate data type for each column but ensure that each column has a unique identifier. Note that the "exams" identifier
   should start at 101 and increment by 1. It is important to correctly set up the foreign keys. */
 
+CREATE TABLE students(
+	id SERIAL PRIMARY KEY,
+	"student_name" VARCHAR(50));
 
+CREATE TABLE exams(
+	id INT GENERATED ALWAYS AS IDENTITY (START WITH 101 INCREMENT BY 1) UNIQUE,
+	"exam_name" VARCHAR(100));
+
+CREATE TABLE study_halls(
+	id SERIAL PRIMARY KEY,
+	"study_hall_name" VARCHAR(100),
+    "exam_id" INT,
+	CONSTRAINT fk_study_halls_exams
+		FOREIGN KEY (exam_id)
+			REFERENCES exams("id"));
+
+CREATE TABLE students_exams(
+    "student_id" INT,
+	"exam_id" INT,
+	CONSTRAINT fk_students_exams_students
+		FOREIGN KEY (student_id)
+			REFERENCES students("id"),
+	CONSTRAINT fk_students_exams_exams
+		FOREIGN KEY (exam_id)
+			REFERENCES exams("id"),
+	CONSTRAINT pk_students_exams
+		PRIMARY KEY (student_id, exam_id));
+
+INSERT INTO students(student_name) 
+VALUES('Mila'), ('Toni'), ('Ron');
+
+INSERT INTO exams(exam_name) 
+VALUES('Python Advanced'), ('Python OOP'), ('PostgreSQL');
+
+INSERT INTO study_halls(study_hall_name, exam_id) 
+VALUES
+('Open Source Hall', 102), ('Inspiration Hall', 101), ('Creative Hall', 103),
+('Masterclass Hall', 103), ('Information Security Hall', 103);
+
+INSERT INTO students_exams( student_id, exam_id) 
+VALUES
+(1, 101), (1, 102), (2, 101),
+(3, 103), (2, 102), (2, 103);
 
 /* 9. Study Session E/R Diagram****
 Create Entity/Relationship Diagram for the "study_session_db" database, which includes four tables: "students", "exams", "study_halls", and "students_exams". */
@@ -156,7 +222,49 @@ Create Entity/Relationship Diagram for the "study_session_db" database, which in
 Create a database called "online_store_db" using the provided E/R Diagram. Set up the necessary tables and ensure that their relationships are properly defined.
 When creating your tables, arrange the columns and foreign key constraints as shown in the diagram below.  */
 
+CREATE TABLE item_types(
+	id SERIAL PRIMARY KEY,
+	"item_type_name" VARCHAR(50));
 
+CREATE TABLE items(
+	id SERIAL PRIMARY KEY,
+	"item_name" VARCHAR(50),
+	"item_type_id" INT,
+	CONSTRAINT fk_items_item_types
+		FOREIGN KEY (item_type_id)
+			REFERENCES item_types("id"));
+
+CREATE TABLE cities(
+	id SERIAL PRIMARY KEY,
+	"city_name" VARCHAR(50));
+
+CREATE TABLE customers(
+	id SERIAL PRIMARY KEY,
+	"customer_name" VARCHAR(100),
+	"birthday" date,
+	"city_id" INT,
+	CONSTRAINT fk_customers_cities
+		FOREIGN KEY (city_id)
+			REFERENCES cities("id"));
+
+CREATE TABLE orders(
+	id SERIAL PRIMARY KEY,
+	"customer_id" INT,
+	CONSTRAINT fk_orders_customers
+		FOREIGN KEY (customer_id)
+			REFERENCES customers("id"));
+			
+CREATE TABLE order_items( 
+	"order_id" INT,
+	"item_id" INT,
+	CONSTRAINT fk_order_items_orders
+		FOREIGN KEY (order_id)
+			REFERENCES orders("id"),
+	CONSTRAINT fk_order_items_items
+		FOREIGN KEY (item_id)
+			REFERENCES items("id"),
+	CONSTRAINT pk_order_items
+		PRIMARY KEY (order_id, item_id));
 
 /* For the upcoming tasks, let's pay more attention to FOREIGN KEY and its Cascade Operations and ensure that they are correctly implemented. We will be using a 
 database that you are already familiar with, but for the purpose of these tasks, the data has been modified. Therefore, create a new database named 
