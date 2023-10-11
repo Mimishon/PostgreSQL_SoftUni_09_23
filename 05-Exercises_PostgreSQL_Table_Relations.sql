@@ -276,13 +276,29 @@ Let's proceed to establish the relationships and update the "countries" table. L
 and ensure that when a record in the parent table is deleted, corresponding records in the child table are also deleted. 
 Submit your query for this task in the Judge system. */
 
-
+ALTER TABLE countries
+ADD CONSTRAINT fk_countries_continents
+	FOREIGN KEY (continent_code)
+		REFERENCES continents(continent_code)
+			ON DELETE CASCADE,
+ADD CONSTRAINT fk_countries_currencies
+	FOREIGN KEY (currency_code)
+		REFERENCES currencies(currency_code)
+			ON DELETE CASCADE;
 
 /* 12. Update Cascade
 Revise the "countries_rivers" table by ensuring that its relationship with the "rivers" and "countries" tables is properly updated. When a row in the
  parent tables is updated, ensure that matching rows in the child table are also updated. */
 
-
+ALTER TABLE countries_rivers
+ADD CONSTRAINT fk_countries_rivers_rivers
+	FOREIGN KEY (river_id)
+		REFERENCES rivers(id)
+			ON UPDATE CASCADE,
+ADD CONSTRAINT fk_countries_rivers_countries
+	FOREIGN KEY (country_code)
+		REFERENCES countries(country_code)
+			ON UPDATE CASCADE;
 
 /* 13. SET NULL
 Write SQL queries to create two new tables: "customers" and "contacts". The "customers" table should have a column for "customer_name", and the 
@@ -294,13 +310,53 @@ in the "contacts" table are also updated accordingly.
 Insert data into the tables in the format shown below:
 Finally, remove the row from the "customers" table where the value of the "id" column matches 1. */
 
+CREATE TABLE customers(
+	id SERIAL PRIMARY KEY,
+	"customer_name" VARCHAR(50));
 
+
+CREATE TABLE contacts(
+	id SERIAL PRIMARY KEY,
+	"contact_name" VARCHAR(50),
+	phone VARCHAR(20),
+	"email" VARCHAR(50),
+	customer_id INT,
+	CONSTRAINT fk_contacts_customers
+		FOREIGN KEY (customer_id)
+			REFERENCES customers("id")
+				ON DELETE SET NULL
+				ON UPDATE CASCADE);
+
+INSERT INTO customers(customer_name) 
+VALUES('BlueBird Inc'), ('Dolphin LLC');
+
+INSERT INTO contacts(contact_name,phone, email, customer_id) 
+VALUES
+('John Doe', '(408)-111-1234', 'john.doe@bluebird.dev', 1), 
+('Jane Doe', '(408)-111-1235', 'jane.doe@bluebird.dev', 1),
+('David Wright', '(408)-222-1234', 'david.wright@dolphin.dev', 2);
+
+
+DELETE FROM customers
+WHERE id = 1
 
 /* 14. * Peaks in Rila
 Retrieve data from the " table_relations_geography_db" database by joining the "mountains" and "peaks" tables using their common data. 
 Then, display all peaks for the "Rila" mountain, including the "mountain_range", "peak_name", and "elevation". Finally, sort the results in descending order by the "elevation". */
 
+ALTER TABLE peaks
+ADD CONSTRAINT fk_peaks_mountains
+	FOREIGN KEY (mountain_id)
+		REFERENCES mountains(id);
 
+SELECT
+m.mountain_range,
+p.peak_name, p.elevation
+FROM mountains AS m
+JOIN peaks AS p
+ON p.mountain_id = m.id
+WHERE m.mountain_range = 'Rila'
+ORDER BY p.elevation DESC;
 
 /* 15. * Countries Without Any Rivers
 Create an SQL query that retrieves data from the "table_relations_geography_db" database by joining the "countries" and "countries_rivers" tables based on their common data. 
@@ -308,3 +364,9 @@ Then, calculate the total number of countries that do not have any rivers.
  *** Note, using a LEFT JOIN will ensure that all records from the "countries" table are included in the result set, 
  and a WHERE clause will filter out rows where the "countries_rivers" table has no corresponding records. */
 
+SELECT
+COUNT(*) AS countries_without_rivers
+FROM countries AS c
+LEFT JOIN countries_rivers AS cr
+ON cr.country_code = c.country_code
+WHERE cr.river_id IS NULL;
