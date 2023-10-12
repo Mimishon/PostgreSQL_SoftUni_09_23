@@ -170,29 +170,67 @@ ORDER BY booking_count DESC;
 Retrieve the "country_code", "mountain_range", "peak_name" and "elevation" from the "mountains", "peaks", and "mountains_countries" tables using a SQL query.
  The query should only include rows where the peak "elevation" is greater than 2835 meters and the "country_code" is 'BG'. The results should be sorted in descending order based on peak "elevation". */
 
-
+SELECT
+mc.country_code, 
+m.mountain_range,
+p.peak_name, 
+p.elevation
+FROM mountains AS m 
+JOIN peaks AS p 
+	ON p.mountain_id = m.id
+JOIN mountains_countries AS mc 
+	ON mc.mountain_id = m.id
+WHERE p.elevation > 2835 AND mc.country_code = 'BG'
+ORDER BY p.elevation DESC;
 
  /*  12. Count Mountain Ranges
 Create a SQL query that returns the number of unique mountain ranges for the countries with the country codes 'US', 'RU', and 'BG'. 
 The results should be grouped by "country_code" and ordered in descending order based on the "mountain_range_count". */
  
-
+SELECT
+mc.country_code, 
+COUNT(DISTINCT(m.mountain_range)) AS mountain_range_count
+FROM mountains AS m 
+JOIN mountains_countries AS mc 
+	ON mc.mountain_id = m.id
+WHERE mc.country_code IN('BG','RU','US')
+GROUP BY mc.country_code
+ORDER BY mountain_range_count DESC;
 
  /*  13. Rivers in Africa
 Write a SQL query that selects the "country_name" and "river_name" (if any) from the "countries", "countries_rivers" and "rivers" tables,
  respectively, for the first five countries in Africa. If a country has no river, the "river_name" should be NULL. The result should be ordered in ascending order based on the "country_name". */
 
-
+SELECT
+c.country_name,
+r.river_name
+FROM countries AS c 
+LEFT JOIN countries_rivers AS cr
+	ON cr.country_code = c.country_code 
+LEFT JOIN rivers AS r 
+	ON r.id = cr.river_id
+WHERE c.continent_code = 'AF'
+ORDER BY c.country_name
+LIMIT 5;
 
  /*  14. Minimum Average Area Across Continents
 Compute the minimum average area among all the continents, where the average area is calculated as the average area of all the countries within each continent. */
 
-
+SELECT 
+MIN(average_area)
+FROM(SELECT AVG(area_in_sq_km) AS average_area
+		FROM countries 
+	 	GROUP BY continent_code) AS min_average_area;
 
  /*  15. Countries Without Any Mountains
 Create an SQL query to retrieve the number of countries that do not have any mountains.  */
 
-
+SELECT
+COUNT(*) AS countries_without_mountains
+FROM countries AS c
+LEFT JOIN mountains_countries AS mc
+ON c.country_code = mc.country_code
+WHERE mc.mountain_id IS NULL;
 
  /*  16. Monasteries by Country ****
 To begin, create a table called "monasteries" with three columns: 
