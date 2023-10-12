@@ -279,7 +279,10 @@ Write a SQL query that selects the fields "tablename", "indexname", and "indexde
 indexes from the "public" schema are retrieved. Sort the results in ascending order based on the "tablename" field. If any of the values are equal, 
 then sort the results by "indexname" in ascending order.  */
 
-
+SELECT p.tablename, p.indexname, p.indexdef
+FROM pg_indexes AS p
+WHERE schemaname = 'public'
+ORDER BY p.tablename, indexname;
 
  /*  19. * Continents and Currencies
 Write a SQL query to create a view called "continent_currency_usage" that shows the "continent_code", "currency_code", and a number of countries 
